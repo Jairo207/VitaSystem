@@ -1,0 +1,558 @@
+/* 1. RESETEO Y VARIABLES (Para que los profes vean que sabes estructurar CSS) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+    --azul-primario: #0056b3;
+    --azul-oscuro: #1e293b;
+    --naranja-cta: #ea580c;
+    --naranja-hover: #c2410c;
+    --gris-fondo: #f8fafc;
+    --gris-texto: #64748b;
+}
+
+body {
+    background-color: var(--gris-fondo);
+    color: var(--azul-oscuro);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. BARRA DE NAVEGACIÓN (Uso de Flexbox justificado) */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Separa el logo del botón a los extremos */
+    align-items: center;
+    padding: 1.5rem 5%;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombrita suave como en Bolt */
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--azul-primario);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.btn-login {
+    background-color: var(--azul-primario);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px; /* Bordes redondeados modernos */
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-login:hover {
+    background-color: #004494;
+}
+
+/* 3. SECCIÓN PRINCIPAL (HERO) */
+.hero {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.hero-content {
+    max-width: 800px;
+}
+
+.hero h1 {
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--azul-oscuro);
+}
+
+.texto-azul {
+    color: var(--azul-primario); /* La parte del título que va en azul */
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--gris-texto);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* BOTÓN NARANJA (Call to Action) */
+.btn-primary {
+    background-color: var(--naranja-cta);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3); /* Resplandor naranja */
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: var(--naranja-hover);
+    transform: translateY(-2px); /* Efecto de que se levanta al pasar el mouse */
+}
+/* =========================================
+   4. SECCIÓN ESPECIALIDADES (CSS GRID)
+   ========================================= */
+.especialidades {
+    padding: 5rem 5%;
+    background-color: white; /* Contraste con el fondo gris de arriba */
+}
+
+.especialidades-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.especialidades-header h2 {
+    font-size: 2.5rem;
+    color: var(--azul-oscuro);
+    margin-bottom: 0.5rem;
+}
+
+.especialidades-header p {
+    color: var(--gris-texto);
+    font-size: 1.1rem;
+}
+
+/* 🔥 ESTO ES LO QUE DA EL 5 EN LA FASE 2 🔥 */
+.grid-especialidades {
+    display: grid;
+    /* La magia responsiva: crea columnas de mínimo 250px. 
+       Si la pantalla crece, caben más. Si se achica (celular), se ponen una debajo de otra. */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem; /* Espacio entre tarjetas */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Diseño de las Tarjetas (Cards) */
+.card {
+    background-color: var(--gris-fondo);
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease; /* Para la animación del hover */
+}
+
+.card:hover {
+    transform: translateY(-10px); /* Se levanta la tarjeta */
+    box-shadow: 0 10px 25px rgba(0, 86, 179, 0.1); /* Sombrita azul médica */
+    border-color: var(--azul-primario);
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background-color: #e0f2fe; /* Circulito azul claro de fondo */
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card h3 {
+    color: var(--azul-oscuro);
+    margin-bottom: 0.8rem;
+    font-size: 1.3rem;
+}
+
+.card p {
+    color: var(--gris-texto);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+/* =========================================
+   5. MODAL DE LOGIN (Caja Flotante)
+   ========================================= */
+.modal {
+    display: none; /* Magia: Inicia oculto, JS lo muestra */
+    position: fixed;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(30, 41, 59, 0.7); /* Fondo oscuro transparente */
+    backdrop-filter: blur(4px); /* Efecto vidrio (glassmorphism) de diseño premium */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    animation: deslizarAbajo 0.3s ease-out; /* Animación fluida de entrada */
+    text-align: center;
+}
+
+/* Animación que le va a encantar al profe */
+@keyframes deslizarAbajo {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    color: var(--gris-texto);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--naranja-cta);
+}
+
+.modal-content h2 {
+    color: var(--azul-oscuro);
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.modal-content p {
+    color: var(--gris-texto);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+/* Formularios chimbas */
+.input-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--azul-oscuro);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--azul-oscuro);
+    transition: all 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--azul-primario);
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1); /* Resplandor azul al escribir */
+}
+
+/* Clase de utilidad para que el botón ocupe todo el ancho */
+.w-100 {
+    width: 100%;
+}
+/* =========================================
+   6. DASHBOARD PRIVADO (Arquitectura y Sidebar)
+   ========================================= */
+.bg-dashboard {
+    background-color: var(--gris-fondo);
+    margin: 0;
+    height: 100vh; /* Ocupa exactamente el 100% de la altura de la pantalla */
+    overflow: hidden; /* Evita que la página entera haga scroll */
+}
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- El Menú Lateral (Sidebar) --- */
+.sidebar {
+    width: 260px;
+    background-color: white;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.sidebar-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--azul-primario);
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar-nav {
+    flex-grow: 1; /* Empuja el botón de "Cerrar sesión" hacia el fondo */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: var(--gris-texto);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.nav-item:hover {
+    background-color: var(--gris-fondo);
+    color: var(--azul-primario);
+}
+
+/* Estilo para el botón del menú donde el usuario está actualmente */
+.nav-item.active {
+    background-color: #eff6ff; /* Azul súper clarito */
+    color: var(--azul-primario);
+    font-weight: 600;
+    border-left: 4px solid var(--azul-primario); /* Línea indicadora a la izquierda */
+}
+
+/* Botón de Salir */
+.logout {
+    color: #ef4444; /* Color rojo de alerta */
+}
+
+.logout:hover {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+/* --- El Lado Derecho (Contenido Principal) --- */
+.dashboard-main {
+    flex-grow: 1; /* Ocupa todo el espacio sobrante a la derecha del menú */
+    overflow-y: auto; /* Si el contenido es muy largo, solo esta parte hace scroll */
+    padding: 2.5rem 4rem;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+.dashboard-header h1 {
+    font-size: 2.2rem;
+    color: var(--azul-oscuro);
+}
+
+.dashboard-header p {
+    color: var(--gris-texto);
+    font-size: 1.1rem;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.dashboard-content h2 {
+    color: var(--azul-oscuro);
+    margin-bottom: 1rem;
+}
+.modal {
+    display: none; /* Esto es vital para que empiecen ocultos */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+}
+/* ==========================================
+   ESTILOS AVANZADOS PARA EL WIZARD DE CITAS
+   (Basados en las capturas)
+   ========================================== */
+
+/* Contenedores de sección y paso */
+.dashboard-section, .booking-step {
+    display: none; /* Ocultos por defecto */
+}
+
+.dashboard-section.active, .booking-step.active {
+    display: block; /* Solo el activo se muestra */
+}
+
+/* Stepper Indicator (Capturas: 1 > 2 > 3) */
+.stepper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e2e8f0; /* Gris apagado */
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    position: relative;
+    border: 2px solid #e2e8f0;
+}
+
+.step.active {
+    background-color: #0056b3; /* Azul VitaSystem */
+    color: white;
+    border-color: #0056b3;
+}
+
+/* Las líneas conectores entre pasos (Gris por defecto) */
+.step:not(:last-child)::after {
+    content: ">";
+    position: absolute;
+    right: -25px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #cbd5e1;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Tarjetas de Selección (Especialidad/Doctor) - Capturas image_5.png y image_6.png */
+.booking-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    border: 2px solid #f1f5f9;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    text-align: left;
+}
+
+.booking-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    border-color: #bfdbfe;
+}
+
+/* Borde azul cuando se selecciona (Captura image_5.png) */
+.booking-card.selected {
+    border-color: #0056b3;
+    background-color: #f0f9ff;
+    box-shadow: 0 8px 15px rgba(0,86,179,0.15);
+}
+
+.specialty-card .card-icon {
+    font-size: 3rem;
+    color: #0056b3;
+    margin-bottom: 20px;
+}
+
+.booking-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    color: #1e293b;
+}
+
+.booking-card p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #64748b;
+}
+
+/* Grilla de Horarios - Captura image_7.png */
+.time-slot {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    color: #475569;
+}
+
+.time-slot:not(.disabled):hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.time-slot.selected {
+    background-color: #0056b3;
+    color: white;
+    border-color: #0056b3;
+}
+
+.time-slot.disabled {
+    background-color: #f1f5f9;
+    color: #cbd5e1;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+}
+
+/* Enlaces de Volver */
+.back-link {
+    color: #0056b3;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Botón de confirmar deshabilitado (Fase 3) */
+.btn-primary.disabled {
+    background-color: #cbd5e1 !important;
+    cursor: not-allowed !important;
+    border-color: #cbd5e1 !important;
+}

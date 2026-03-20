@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portal | VitaSystem</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body class="bg-dashboard">
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span class="icono-pulso">〰️</span> VitaSystem
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" id="linkInicio" class="nav-item active">🏠 Inicio</a>
+                <a href="#" id="linkAgendar" class="nav-item">📅 Agendar Cita</a>
+                <a href="#" id="linkMisCitas" class="nav-item">📋 Mis Citas</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" id="btnLogout" class="nav-item logout">🚪 Cerrar Sesión</a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            
+            <header class="dashboard-header">
+                <div>
+                    <h1 id="textoBienvenida">Cargando...</h1>
+                    <p>Bienvenido a tu portal de salud</p>
+                </div>
+                <div class="user-profile">
+                    <img src="" id="userAvatar" alt="Perfil" class="avatar">
+                </div>
+            </header>
+
+            <section id="seccionInicio" class="dashboard-section active">
+                <h2>Resumen de tu cuenta</h2>
+                <div class="card" style="margin-top: 20px;">
+                    <h3>📅 Próximas Citas</h3>
+                    <p>Aquí diseñaremos las tarjetas de tus próximas citas médicas...</p>
+                </div>
+            </section>
+
+            <section id="seccionAgendar" class="dashboard-section">
+                
+                <div class="booking-wizard-header card" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="step-icon" style="font-size: 2rem;">📅</span>
+                        <h2 style="margin: 0;">Agendar Nueva Cita</h2>
+                    </div>
+                    <div class="stepper">
+                        <div class="step active" data-step="1">1</div>
+                        <div class="step" data-step="2">2</div>
+                        <div class="step" data-step="3">3</div>
+                    </div>
+                </div>
+
+                <div id="step1Container" class="booking-step active">
+                    <h3>Paso 1: Selecciona una Especialidad</h3>
+                    <div class="booking-card specialty-card" data-specialty="Cardiología">
+    <div style="font-size: 40px; margin-bottom: 10px;">🫀</div>
+    <h3>Cardiología</h3>
+    <p style="color: #64748b; font-size: 13px;">Cuidado integral de tu corazón con especialistas de primer nivel.</p>
+</div>
+
+<div class="booking-card specialty-card" data-specialty="Pediatría">
+    <div style="font-size: 40px; margin-bottom: 10px;">👶</div>
+    <h3>Pediatría</h3>
+    <p style="color: #64748b; font-size: 13px;">Atención médica especializada para el desarrollo de tus hijos.</p>
+</div>
+
+<div class="booking-card specialty-card" data-specialty="Neumología">
+    <div style="font-size: 40px; margin-bottom: 10px;">🫁</div>
+    <h3>Neumología</h3>
+    <p style="color: #64748b; font-size: 13px;">Diagnóstico y tratamiento avanzado del sistema respiratorio.</p>
+</div>
+
+<div class="booking-card specialty-card" data-specialty="Traumatología">
+    <div style="font-size: 40px; margin-bottom: 10px;">🦴</div>
+    <h3>Traumatología</h3>
+    <p style="color: #64748b; font-size: 13px;">Expertos en lesiones óseas, articulares y musculares.</p>
+</div>
+
+<div class="booking-card specialty-card" data-specialty="Oftalmología">
+    <div style="font-size: 40px; margin-bottom: 10px;">👁️</div>
+    <h3>Oftalmología</h3>
+    <p style="color: #64748b; font-size: 13px;">Cuida tu visión con nuestros especialistas en salud ocular.</p>
+</div>
+
+<div class="booking-card specialty-card" data-specialty="Medicina General">
+    <div style="font-size: 40px; margin-bottom: 10px;">🩺</div>
+    <h3>Medicina General</h3>
+    <p style="color: #64748b; font-size: 13px;">Atención primaria para el cuidado integral de tu salud.</p>
+</div>
+
+<div class="booking-card specialty-card" data-specialty="Odontología">
+    <div style="font-size: 40px; margin-bottom: 10px;">🦷</div>
+    <h3>Odontología</h3>
+    <p style="color: #64748b; font-size: 13px;">Cuidado integral de tu salud bucal con nuestros especialistas.</p>
+</div>
+
+<div class="booking-card specialty-card" data-specialty="Ginecología">
+    <div style="font-size: 40px; margin-bottom: 10px;">👩‍⚕️</div>
+    <h3>Ginecología</h3>
+    <p style="color: #64748b; font-size: 13px;">Atención especializada para la salud femenina y reproducción.</p>
+</div>
+                </div>
+
+                <div id="step2Container" class="booking-step">
+                    <h3>Paso 2: Selecciona un Médico</h3>
+                    <p>Especialidad seleccionada: <strong id="step2SpecialtyLabel"></strong></p>
+                    <div id="doctorCardsList" class="booking-list" style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
+                        <div class="card" style="text-align: center;">Cargando doctores disponibles...</div>
+                    </div>
+                    <a href="#" class="back-link" style="margin-top: 20px; display: inline-block;">← Volver a Especialidades</a>
+                </div>
+
+                <div id="step3Container" class="booking-step">
+                    <h3>Paso 3: Selecciona Fecha y Hora</h3>
+                    <p>Médico seleccionado: <strong id="step3DoctorLabel"></strong></p>
+                    <div class="card" style="margin-top: 20px;">
+                        <form id="finalAgendarForm">
+                            <div class="input-group">
+                                <label for="citaFecha">Fecha de la cita</label>
+                                <input type="date" id="citaFecha" required>
+                            </div>
+                            
+                            <div class="input-group" style="margin-top: 15px;">
+                                <label>Horarios disponibles</label>
+                                <div id="timeSlotsGrid" class="time-slots-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
+                                    </div>
+                            </div>
+                            <div class="input-group" style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+            <label for="citaCorreoConfirmacion">Confirma el correo con el que te registraste:</label>
+            <input type="email" id="citaCorreoConfirmacion" placeholder="ejemplo@correo.com" required style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        </div>
+        ```
+
+
+                            <button type="submit" id="btnConfirmarFinal" class="btn-primary w-100 disabled" style="margin-top: 20px;" disabled>Confirmar Cita</button>
+                        </form>
+                    </div>
+                    <a href="#" class="back-link" style="margin-top: 20px; display: inline-block;">← Volver</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
