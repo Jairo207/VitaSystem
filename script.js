@@ -48,6 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (respuesta.ok) {
                     alert('✅ ' + resultado.mensaje);
                     localStorage.setItem('nombrePaciente', resultado.nombreUsuario);
+                    // 👇 AQUÍ ESTÁ LA MAGIA: Guardamos el correo silenciosamente
+                    localStorage.setItem('correoPaciente', datosLogin.correo); 
                     window.location.href = 'dashboard.html';
                 } else {
                     alert('❌ ' + resultado.mensaje); // Clave incorrecta
@@ -59,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. LÓGICA DE CREAR CUENTA (REGISTRO) ---
     // --- 4. LÓGICA DE CREAR CUENTA (REGISTRO) ---
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
@@ -73,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const datosPaciente = {
                 nombre: document.getElementById('regNombre').value,
                 cedula: document.getElementById('regCedula').value,
-                // AQUÍ CORREGIMOS EL ID: ahora busca 'regCorreo'
                 correo: document.getElementById('regCorreo').value, 
                 telefono: document.getElementById('regTelefono').value,
                 password: document.getElementById('regPassword').value
@@ -91,6 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (respuesta.ok) {
                     alert('🎉 ' + resultado.mensaje);
                     localStorage.setItem('nombrePaciente', resultado.nombreUsuario);
+                    // 👇 Por si acaso, también guardamos el correo al registrarse
+                    localStorage.setItem('correoPaciente', datosPaciente.correo);
                     window.location.href = 'dashboard.html';
                 } else {
                     alert('❌ ' + resultado.mensaje); 

@@ -21,7 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnLogout) {
         btnLogout.addEventListener('click', (evento) => {
             evento.preventDefault();
-            localStorage.removeItem('nombrePaciente');
+            // Borramos el nombre y el correo del paciente
+            localStorage.removeItem('nombrePaciente'); 
+            localStorage.removeItem('correoPaciente'); 
             window.location.href = 'index.html';
         });
     }
@@ -33,18 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const linkInicio = document.getElementById('linkInicio');
     const linkAgendar = document.getElementById('linkAgendar');
 
-    // Función para cambiar de sección
     function mostrarSeccion(seccionActiva, linkActivo) {
-        // Ocultar todas las secciones
         document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
-        // Quitar active de todos los links
         document.querySelectorAll('.sidebar-nav .nav-item').forEach(l => l.classList.remove('active'));
         
-        // Mostrar la activa
         seccionActiva.classList.add('active');
         linkActivo.classList.add('active');
 
-        // Si entramos a agendar, reiniciar el wizard al paso 1
         if (seccionActiva === seccionAgendar) {
             goToStep(1);
         }
@@ -72,17 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeSlotsGrid = document.getElementById('timeSlotsGrid');
     const btnConfirmarFinal = document.getElementById('btnConfirmarFinal');
 
-    // Función principal para cambiar de paso
     function goToStep(stepNumber) {
         currentStep = stepNumber;
-        
-        // Actualizar Stepper Header (Capturas: 1 > 2 > 3)
         stepper.querySelectorAll('.step').forEach((s, index) => {
             if (index + 1 <= currentStep) s.classList.add('active');
             else s.classList.remove('active');
         });
 
-        // Actualizar visibilidad de los contenedores
         stepContainers.forEach(container => container.classList.remove('active'));
         document.getElementById(`step${currentStep}Container`).classList.add('active');
     }
@@ -91,34 +84,27 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.specialty-card').forEach(card => {
         card.addEventListener('click', () => {
             selectedSpecialty = card.getAttribute('data-specialty');
-            step2SpecialtyLabel.textContent = selectedSpecialty; // Actualizar etiqueta en Paso 2
+            step2SpecialtyLabel.textContent = selectedSpecialty; 
             console.log("Especialidad seleccionada:", selectedSpecialty);
             goToStep(2);
-            cargarDoctores(); // Cargar doctores basados en la especialidad
+            cargarDoctores(); 
         });
     });
-
-// ==========================================
-    // 🔌 CONEXIÓN REAL A LA BASE DE DATOS (ADIÓS DATOS FALSOS)
-    // ==========================================
 
     async function cargarDoctores() {
         doctorCardsList.innerHTML = `<div class="card" style="text-align: center; width: 100%;">Buscando doctores reales en ${selectedSpecialty}...</div>`;
         
         try {
-            // Le pedimos al servidor los doctores de tu base de datos XAMPP
             const respuesta = await fetch('http://localhost:3000/api/doctores');
             const doctoresReales = await respuesta.json();
 
-            // Filtramos solo los que sean de la especialidad seleccionada
             const doctoresFiltrados = doctoresReales.filter(doc => doc.especialidad === selectedSpecialty);
 
-            doctorCardsList.innerHTML = ''; // Limpiamos la cajita
+            doctorCardsList.innerHTML = ''; 
 
             if (doctoresFiltrados.length === 0) {
                 doctorCardsList.innerHTML = `<div class="card" style="text-align: center; background-color: #fee2e2; color: #991b1b; width: 100%;">⚠️ Aún no hay doctores registrados en ${selectedSpecialty}.</div>`;
             } else {
-                // Dibujamos las tarjetas con los datos de verdad
                 doctoresFiltrados.forEach(doc => {
                     doctorCardsList.innerHTML += `
                         <div class="booking-card doctor-card" data-doctor-id="${doc.id}" data-doctor-name="${doc.nombre}" style="flex-direction: row; gap: 20px; align-items: center; justify-content: start;">
@@ -131,15 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 });
 
-                // Le damos vida (clic) a los doctores nuevos
                 document.querySelectorAll('.doctor-card').forEach(card => {
                     card.addEventListener('click', () => {
                         selectedDoctorId = card.getAttribute('data-doctor-id');
                         selectedDoctorName = card.getAttribute('data-doctor-name');
                         step3DoctorLabel.textContent = selectedDoctorName; 
-                        console.log("Doctor en base de datos seleccionado:", selectedDoctorName);
+                        console.log("Doctor seleccionado:", selectedDoctorName);
                         goToStep(3);
-                        cargarHorarios(); // Pasamos a buscar los horarios de este doctor
+                        cargarHorarios(); 
                     });
                 });
             }
@@ -150,30 +135,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function cargarHorarios() {
-        // Al entrar al paso 3, pedimos que escoja una fecha primero
         timeSlotsGrid.innerHTML = '<p style="text-align: center; width: 100%; color: #64748b;">📅 Selecciona una fecha arriba para ver los horarios del doctor.</p>'; 
         
         const fechaInput = document.getElementById('citaFecha');
-        
-        // Truquito para no acumular eventos cada vez que el usuario va y vuelve
         const nuevoFechaInput = fechaInput.cloneNode(true);
         fechaInput.parentNode.replaceChild(nuevoFechaInput, fechaInput);
 
-        // Cuando el usuario elige un día en el calendario...
         nuevoFechaInput.addEventListener('change', async (e) => {
             selectedDate = e.target.value;
-            console.log("Consultando horarios reales para:", selectedDate);
-            
             timeSlotsGrid.innerHTML = '<p style="text-align: center; width: 100%;">⏳ Consultando disponibilidad en la base de datos...</p>';
 
             try {
-                // Buscamos si ese doctor ya tiene citas ese día
                 const respuesta = await fetch(`http://localhost:3000/api/horarios-disponibles?doctor_id=${selectedDoctorId}&fecha=${selectedDate}`);
                 const horariosReales = await respuesta.json();
 
-                timeSlotsGrid.innerHTML = ''; // Limpiar
+                timeSlotsGrid.innerHTML = ''; 
                 
-                // Dibujamos los horarios, bloqueando los que ya están en la tabla "citas"
                 horariosReales.forEach(slot => {
                     const isDisabled = slot.ocupado;
                     timeSlotsGrid.innerHTML += `
@@ -183,18 +160,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 });
 
-                // Clic para seleccionar la hora
                 document.querySelectorAll('.time-slot:not(.disabled)').forEach(slot => {
                     slot.addEventListener('click', () => {
                         document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
                         slot.classList.add('selected');
                         selectedTime = slot.getAttribute('data-time');
-                        console.log("Hora libre seleccionada:", selectedTime);
                         habilitarConfirmacion();
                     });
                 });
                 
-                // Reseteamos el botón si cambian de fecha
                 selectedTime = null; 
                 habilitarConfirmacion();
 
@@ -215,21 +189,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ENVÍO FINAL DE LA CITA (Conectado a Nodemailer de la Fase 3) ---
-    // --- ENVÍO FINAL DE LA CITA (Conectado a Nodemailer de la Fase 3) ---
+    // --- ENVÍO FINAL DE LA CITA ---
     const finalAgendarForm = document.getElementById('finalAgendarForm');
     if (finalAgendarForm) {
         finalAgendarForm.addEventListener('submit', async (evento) => {
             evento.preventDefault();
             
-            // Le avisamos al usuario que estamos procesando porque Nodemailer tarda un par de segundos
             alert('⏳ Procesando tu cita y contactando al servidor de correos... Por favor espera un momento.');
 
-            // 🌟 AHORA SÍ LEEMOS EL CORREO DE LA CAJITA QUE CREASTE EN EL HTML 🌟
             const patientEmailInput = document.getElementById('citaCorreoConfirmacion');
-            const patientEmail = patientEmailInput.value.trim(); // .trim() quita los espacios en blanco por si acaso
+            const patientEmail = patientEmailInput.value.trim(); 
 
-            // Verificamos que no esté vacío
             if (!patientEmail) {
                 alert('⚠️ Por favor, ingresa tu correo para confirmar la cita.');
                 return;
@@ -243,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                // Hacemos la petición al Backend (La ruta '/api/agendar' que ya tenemos)
                 const respuesta = await fetch('http://localhost:3000/api/agendar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -253,9 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (respuesta.ok) {
                     alert('🎉 ' + resultado.mensaje);
-                    // Limpiamos el campo del correo
                     patientEmailInput.value = '';
-                    // Reiniciar el wizard al inicio
                     mostrarSeccion(seccionInicio, linkInicio);
                 } else {
                     alert('❌ Error: ' + resultado.mensaje);
@@ -275,4 +242,75 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // ==========================================
+    // 4. LÓGICA DE "MIS CITAS" (COMPLETAMENTE ARREGLADA)
+    // ==========================================
+    const seccionMisCitas = document.getElementById('seccionMisCitas');
+    const linkMisCitas = document.getElementById('linkMisCitas');
+    const contenedorMisCitas = document.getElementById('contenedorMisCitas');
+
+    if (linkMisCitas) {
+        linkMisCitas.addEventListener('click', () => {
+            mostrarSeccion(seccionMisCitas, linkMisCitas);
+            cargarMisCitas(); 
+        });
+    }
+
+    async function cargarMisCitas() {
+        // Sacamos el correo limpio, sin molestar al usuario
+        let correo = localStorage.getItem('correoPaciente');
+        
+        if (!correo) {
+            // Si por alguna razón el correo no está guardado, le avisamos para que vuelva a entrar
+            if (contenedorMisCitas) {
+                contenedorMisCitas.innerHTML = '<div style="text-align:center; padding:20px; color:#ef4444; background:#fee2e2; border-radius:8px;">⚠️ Sesión incompleta. Por favor cierra sesión y vuelve a ingresar.</div>';
+            }
+            return;
+        }
+
+        if (contenedorMisCitas) {
+            contenedorMisCitas.innerHTML = '<div style="text-align:center; padding: 20px;">⏳ Buscando tus citas en la base de datos...</div>';
+        }
+
+        try {
+            const respuesta = await fetch(`http://localhost:3000/api/mis-citas?correo=${correo}`);
+            const citas = await respuesta.json();
+
+            if (!respuesta.ok) {
+                if (contenedorMisCitas) contenedorMisCitas.innerHTML = `<div style="color:red; text-align:center; padding:20px;">❌ ${citas.mensaje}</div>`;
+                return;
+            }
+
+            if (citas.length === 0) {
+                if (contenedorMisCitas) contenedorMisCitas.innerHTML = '<div style="text-align:center; padding: 20px; background:#f1f5f9; border-radius:10px;">No tienes citas programadas aún. Anímate a agendar una. 🏥</div>';
+                return;
+            }
+
+            // Pintar las tarjetas de las citas
+            let htmlCitas = '<div style="display: flex; flex-direction: column; gap: 15px;">';
+            citas.forEach(cita => {
+                const fechaLimpia = cita.fecha.substring(0, 10);
+                
+                htmlCitas += `
+                    <div class="card" style="border-left: 5px solid #0ea5e9; padding: 15px; display: flex; justify-content: space-between; align-items: center; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 8px;">
+                        <div>
+                            <h3 style="margin: 0; color: #0f172a; font-size: 1.1rem;">Cita de ${cita.especialidad}</h3>
+                            <p style="margin: 5px 0 0 0; color: #475569;">👨‍⚕️ Dr. ${cita.doctor}</p>
+                        </div>
+                        <div style="text-align: right; background: #f0f9ff; padding: 10px; border-radius: 8px;">
+                            <span style="display: block; font-weight: bold; color: #0284c7; margin-bottom: 5px;">📅 ${fechaLimpia}</span>
+                            <span style="display: block; font-weight: bold; color: #ea580c;">⏰ ${cita.hora}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            htmlCitas += '</div>';
+
+            if (contenedorMisCitas) contenedorMisCitas.innerHTML = htmlCitas;
+
+        } catch (error) {
+            console.error("Error cargando mis citas:", error);
+            if (contenedorMisCitas) contenedorMisCitas.innerHTML = '<div style="color:red; text-align:center; padding:20px;">🚨 Error conectando con el servidor de Node.js.</div>';
+        }
+    }
 });
