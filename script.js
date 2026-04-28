@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const respuesta = await fetch('http://localhost:3000/api/login', {
+                const respuesta = await fetch('http://127.0.0.1:3000/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datosLogin)
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const respuesta = await fetch('http://localhost:3000/api/registro', {
+                const respuesta = await fetch('http://127.0.0.1:3000/api/registro', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datosPaciente)

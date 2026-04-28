@@ -8,11 +8,16 @@
 
 :root {
     --azul-primario: #0056b3;
+    --azul-claro: #e0f2fe;
     --azul-oscuro: #1e293b;
     --naranja-cta: #ea580c;
     --naranja-hover: #c2410c;
     --gris-fondo: #f8fafc;
     --gris-texto: #64748b;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -66,12 +71,114 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 8rem 2rem;
+    background: radial-gradient(circle at top right, #f0f9ff 0%, transparent 40%),
+                radial-gradient(circle at bottom left, #f8fafc 0%, transparent 40%);
 }
 
 .hero-content {
     max-width: 800px;
 }
+
+/* =========================================
+   7. SECCIÓN TESTIMONIOS (Reseñas)
+   ========================================= */
+.testimonios {
+    padding: 6rem 5%;
+    background-color: white;
+}
+
+.grid-testimonios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.testimonio-card {
+    background: var(--gris-fondo);
+    padding: 2.5rem;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.testimonio-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.estrellas {
+    color: #fbbf24;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.testimonio-card p {
+    color: var(--azul-oscuro);
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.autor {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.autor img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* =========================================
+   8. FOOTER Y CONTACTO (Profesional)
+   ========================================= */
+.footer {
+    background-color: var(--azul-oscuro);
+    color: white;
+    padding: 4rem 5% 2rem;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer-col h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.footer-col p, .footer-col a {
+    color: #94a3b8;
+    text-decoration: none;
+    margin-bottom: 0.8rem;
+    display: block;
+    transition: color 0.3s;
+}
+
+.footer-col a:hover {
+    color: var(--azul-primario);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+    
 
 .hero h1 {
     font-size: 4.5rem;
@@ -299,6 +406,7 @@ body {
 /* --- El Menú Lateral (Sidebar) --- */
 .sidebar {
     width: 260px;
+    flex-shrink: 0; /* Evita que el dashboard "empuje" o apriete el menú */
     background-color: white;
     border-right: 1px solid #e2e8f0;
     display: flex;
@@ -361,8 +469,10 @@ body {
 /* --- El Lado Derecho (Contenido Principal) --- */
 .dashboard-main {
     flex-grow: 1; /* Ocupa todo el espacio sobrante a la derecha del menú */
+    min-width: 0; /* Evita que las grillas internas desborden el layout flex */
     overflow-y: auto; /* Si el contenido es muy largo, solo esta parte hace scroll */
-    padding: 2.5rem 4rem;
+    overflow-x: hidden;
+    padding: 2.5rem 3rem;
 }
 
 .dashboard-header {
@@ -464,7 +574,7 @@ body {
 /* Tarjetas de Selección (Especialidad/Doctor) - Capturas image_5.png y image_6.png */
 .booking-card {
     background: white;
-    padding: 30px;
+    padding: 15px;
     border-radius: 12px;
     border: 2px solid #f1f5f9;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -472,8 +582,8 @@ body {
     transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
-    align-items: start;
-    text-align: left;
+    align-items: center;
+    text-align: center;
 }
 
 .booking-card:hover {
@@ -497,17 +607,49 @@ body {
 
 .booking-card h3 {
     margin: 0 0 8px 0;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #1e293b;
 }
-
+ /* Grilla para el Wizard de Citas */
+ .booking-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Más flexible para evitar desbordes */
+     gap: 1rem;
+     margin-top: 1.5rem;
+ }
 .booking-card p {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     color: #64748b;
 }
 
+.available-tag {
+    background-color: #dcfce7; /* Verde claro */
+    color: #166534; /* Verde oscuro */
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-top: 8px;
+    text-transform: uppercase;
+}
+
+/* Grilla para la lista de doctores */
+.booking-list {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    gap: 1rem !important;
+}
+
 /* Grilla de Horarios - Captura image_7.png */
+.time-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Horarios más compactos */
+    gap: 10px;
+    margin-top: 10px;
+}
+
 .time-slot {
     background-color: white;
     border: 1px solid #e2e8f0;
@@ -555,4 +697,156 @@ body {
     background-color: #cbd5e1 !important;
     cursor: not-allowed !important;
     border-color: #cbd5e1 !important;
+}
+
+/* Botón de cancelación */
+.btn-cancelar-cita {
+    background-color: transparent;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancelar-cita:hover {
+    background-color: #fef2f2;
+    border-color: #ef4444;
+}
+
+/* Layout para la sección de Inicio en el Dashboard */
+.dashboard-inicio-layout {
+    display: flex;
+    gap: 2.5rem; /* Espacio entre el calendario y las citas */
+    align-items: flex-start;
+    margin-top: 25px;
+}
+
+#contenedorCalendario {
+    flex-shrink: 0; /* Evita que el calendario se encoja */
+}
+
+#contenedorProximasCitas {
+    flex-grow: 1; /* Las citas ocupan el espacio restante */
+    margin-top: 0 !important;
+}
+
+/* --- ESTILOS DEL CALENDARIO --- */
+.calendar-container {
+    background: white;
+    padding: 15px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 0; /* Eliminamos el margen inferior anterior */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    max-width: 350px; /* Lo hace más pequeño */
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.calendar-header h3 {
+    color: var(--azul-oscuro);
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.btn-cal {
+    background: var(--gris-fondo);
+    border: none;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.btn-cal:hover {
+    background: var(--azul-claro);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-day-head {
+    text-align: center;
+    font-weight: 700;
+    color: var(--gris-texto);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    padding-bottom: 5px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    background-color: var(--gris-fondo);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    position: relative;
+}
+
+.calendar-day.today { border: 2px solid var(--azul-primario); color: var(--azul-primario); }
+.calendar-day.has-appointment { background-color: #dbeafe; color: #1e40af; }
+.calendar-day.empty { background: transparent; }
+
+.appointment-dot {
+    width: 5px; height: 5px; background-color: var(--naranja-cta);
+    border-radius: 50%; margin-top: 3px;
+}
+
+/* Responsividad: Si la pantalla es pequeña (Tablets/Móviles), apilarlos verticalmente */
+@media (max-width: 992px) {
+    .dashboard-inicio-layout {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .calendar-container {
+        max-width: 100%; /* El calendario ocupa todo el ancho en móvil */
+    }
+}
+
+/* Animación de entrada para las tarjetas de citas */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+#contenedorProximasCitas .card {
+    animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* Ajustes para pantallas medianas */
+@media (max-width: 1200px) {
+    .dashboard-main {
+        padding: 2rem;
+    }
+    .booking-wizard-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
 }

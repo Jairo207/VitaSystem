@@ -40,9 +40,9 @@
 
             <section id="seccionInicio" class="dashboard-section active">
                 <h2>Resumen de tu cuenta</h2>
-                <div class="card" style="margin-top: 20px;">
-                    <h3>📅 Próximas Citas</h3>
-                    <p>Aquí diseñaremos las tarjetas de tus próximas citas médicas...</p>
+                <div class="dashboard-inicio-layout">
+                    <div id="contenedorCalendario"></div>
+                    <div id="contenedorProximasCitas"></div>
                 </div>
             </section>
 
@@ -62,59 +62,61 @@
 
                 <div id="step1Container" class="booking-step active">
                     <h3>Paso 1: Selecciona una Especialidad</h3>
-                    <div class="booking-card specialty-card" data-specialty="Cardiología">
-                        <div style="font-size: 40px; margin-bottom: 10px;">🫀</div>
-                        <h3>Cardiología</h3>
-                        <p style="color: #64748b; font-size: 13px;">Cuidado integral de tu corazón con especialistas de primer nivel.</p>
-                    </div>
+                    <div class="booking-grid">
+                        <div class="booking-card specialty-card" data-specialty="Cardiología">
+                            <div style="font-size: 30px; margin-bottom: 10px;">🫀</div>
+                            <h3>Cardiología</h3>
+                            <p style="color: #64748b; font-size: 13px;">Cuidado integral de tu corazón con especialistas de primer nivel.</p>
+                        </div>
 
-                    <div class="booking-card specialty-card" data-specialty="Pediatría">
-                        <div style="font-size: 40px; margin-bottom: 10px;">👶</div>
-                        <h3>Pediatría</h3>
-                        <p style="color: #64748b; font-size: 13px;">Atención médica especializada para el desarrollo de tus hijos.</p>
-                    </div>
+                        <div class="booking-card specialty-card" data-specialty="Pediatría">
+                            <div style="font-size: 30px; margin-bottom: 10px;">👶</div>
+                            <h3>Pediatría</h3>
+                            <p style="color: #64748b; font-size: 13px;">Atención médica especializada para el desarrollo de tus hijos.</p>
+                        </div>
 
-                    <div class="booking-card specialty-card" data-specialty="Neumología">
-                        <div style="font-size: 40px; margin-bottom: 10px;">🫁</div>
-                        <h3>Neumología</h3>
-                        <p style="color: #64748b; font-size: 13px;">Diagnóstico y tratamiento avanzado del sistema respiratorio.</p>
-                    </div>
+                        <div class="booking-card specialty-card" data-specialty="Neumología">
+                            <div style="font-size: 30px; margin-bottom: 10px;">🫁</div>
+                            <h3>Neumología</h3>
+                            <p style="color: #64748b; font-size: 13px;">Diagnóstico y tratamiento avanzado del sistema respiratorio.</p>
+                        </div>
 
-                    <div class="booking-card specialty-card" data-specialty="Traumatología">
-                        <div style="font-size: 40px; margin-bottom: 10px;">🦴</div>
-                        <h3>Traumatología</h3>
-                        <p style="color: #64748b; font-size: 13px;">Expertos en lesiones óseas, articulares y musculares.</p>
-                    </div>
+                        <div class="booking-card specialty-card" data-specialty="Traumatología">
+                            <div style="font-size: 30px; margin-bottom: 10px;">🦴</div>
+                            <h3>Traumatología</h3>
+                            <p style="color: #64748b; font-size: 13px;">Expertos en lesiones óseas, articulares y musculares.</p>
+                        </div>
 
-                    <div class="booking-card specialty-card" data-specialty="Oftalmología">
-                        <div style="font-size: 40px; margin-bottom: 10px;">👁️</div>
-                        <h3>Oftalmología</h3>
-                        <p style="color: #64748b; font-size: 13px;">Cuida tu visión con nuestros especialistas en salud ocular.</p>
-                    </div>
+                        <div class="booking-card specialty-card" data-specialty="Oftalmología">
+                            <div style="font-size: 30px; margin-bottom: 10px;">👁️</div>
+                            <h3>Oftalmología</h3>
+                            <p style="color: #64748b; font-size: 13px;">Cuida tu visión con nuestros especialistas en salud ocular.</p>
+                        </div>
 
-                    <div class="booking-card specialty-card" data-specialty="Medicina General">
-                        <div style="font-size: 40px; margin-bottom: 10px;">🩺</div>
-                        <h3>Medicina General</h3>
-                        <p style="color: #64748b; font-size: 13px;">Atención primaria para el cuidado integral de tu salud.</p>
-                    </div>
+                        <div class="booking-card specialty-card" data-specialty="Medicina General">
+                            <div style="font-size: 30px; margin-bottom: 10px;">🩺</div>
+                            <h3>Medicina General</h3>
+                            <p style="color: #64748b; font-size: 13px;">Atención primaria para el cuidado integral de tu salud.</p>
+                        </div>
 
-                    <div class="booking-card specialty-card" data-specialty="Odontología">
-                        <div style="font-size: 40px; margin-bottom: 10px;">🦷</div>
-                        <h3>Odontología</h3>
-                        <p style="color: #64748b; font-size: 13px;">Cuidado integral de tu salud bucal con nuestros especialistas.</p>
-                    </div>
+                        <div class="booking-card specialty-card" data-specialty="Odontología">
+                            <div style="font-size: 30px; margin-bottom: 10px;">🦷</div>
+                            <h3>Odontología</h3>
+                            <p style="color: #64748b; font-size: 13px;">Cuidado integral de tu salud bucal con nuestros especialistas.</p>
+                        </div>
 
-                    <div class="booking-card specialty-card" data-specialty="Ginecología">
-                        <div style="font-size: 40px; margin-bottom: 10px;">👩‍⚕️</div>
-                        <h3>Ginecología</h3>
-                        <p style="color: #64748b; font-size: 13px;">Atención especializada para la salud femenina y reproducción.</p>
+                        <div class="booking-card specialty-card" data-specialty="Ginecología">
+                            <div style="font-size: 30px; margin-bottom: 10px;">👩‍⚕️</div>
+                            <h3>Ginecología</h3>
+                            <p style="color: #64748b; font-size: 13px;">Atención especializada para la salud femenina y reproducción.</p>
+                        </div>
                     </div>
                 </div>
 
                 <div id="step2Container" class="booking-step">
                     <h3>Paso 2: Selecciona un Médico</h3>
                     <p>Especialidad seleccionada: <strong id="step2SpecialtyLabel"></strong></p>
-                    <div id="doctorCardsList" class="booking-list" style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
+                    <div id="doctorCardsList" class="booking-list" style="margin-top: 20px;">
                         <div class="card" style="text-align: center;">Cargando doctores disponibles...</div>
                     </div>
                     <a href="#" class="back-link" style="margin-top: 20px; display: inline-block;">← Volver a Especialidades</a>
@@ -132,7 +134,7 @@
                             
                             <div class="input-group" style="margin-top: 15px;">
                                 <label>Horarios disponibles</label>
-                                <div id="timeSlotsGrid" class="time-slots-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
+                                <div id="timeSlotsGrid" class="time-slots-grid">
                                 </div>
                             </div>
                             

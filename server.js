@@ -162,10 +162,10 @@ app.get('/api/mis-citas', (req, res) => {
 
         // 2. Ahora sí buscamos las citas usando el ID del paciente y traemos los datos del doctor
         const consultaSQL = `
-            SELECT citas.fecha, citas.hora, doctores.nombre AS doctor, doctores.especialidad 
+            SELECT citas.id, citas.fecha, citas.hora, doctores.nombre AS doctor, doctores.especialidad 
             FROM citas 
             JOIN doctores ON citas.doctor_id = doctores.id 
-            WHERE citas.paciente_id = ? 
+            WHERE citas.paciente_id = ? AND citas.estado = 'Pendiente'
             ORDER BY citas.fecha ASC, citas.hora ASC
         `;
 
@@ -179,6 +179,51 @@ app.get('/api/mis-citas', (req, res) => {
         });
     });
 });
+
+// ==========================================
+// RUTA 7: CANCELAR CITA CON PENALIZACIÓN
+// ==========================================
+app.post('/api/cancelar-cita', (req, res) => {
+    const { cita_id } = req.body;
+
+    // 1. Obtener la fecha y hora de la cita para calcular la penalización
+    db.query('SELECT fecha, hora FROM citas WHERE id = ?', [cita_id], (err, results) => {
+        if (err || results.length === 0) return res.status(404).json({ mensaje: 'Cita no encontrada' });
+
+        const cita = results[0];
+        // Combinar fecha y hora para la comparación
+        const fechaCita = new Date(cita.fecha);
+        const [horas, minutos] = cita.hora.split(':');
+        fechaCita.setHours(horas, minutos, 0);
+
+        const ahora = new Date();
+        const diferenciaHoras = (fechaCita - ahora) / (1000 * 60 * 60);
+
+        // 2. Actualizar el estado a 'Cancelada'
+        db.query('UPDATE citas SET estado = "Cancelada" WHERE id = ?', [cita_id], (errUpd) => {
+            if (errUpd) return res.status(500).json({ mensaje: 'Error al procesar la cancelación' });
+
+            // 3. Responder según el tiempo restante
+            if (diferenciaHoras < 24) {
+                res.status(200).json({ 
+                    mensaje: 'Cita cancelada. Al faltar menos de 24 horas para la consulta, se ha aplicado una penalización en su cuenta.',
+                    penalizacion: true 
+                });
+            } else {
+                res.status(200).json({ mensaje: 'Cita cancelada con éxito sin penalizaciones.', penalizacion: false });
+            }
+        });
+    });
+});
+
+// ==========================================
+// RUTA CATCH-ALL PARA 404 (Debe ir al final)
+// ==========================================
+app.use((req, res, next) => {
+    console.warn(`⚠️ Ruta no encontrada en Node.js: ${req.method} ${req.originalUrl}`);
+    res.status(404).send('<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1><p>La ruta solicitada no existe en el servidor Node.js.</p></body></html>');
+});
+
 app.listen(3000, () => {
     console.log('🚀 Servidor Backend corriendo en http://localhost:3000');
 });

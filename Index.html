@@ -76,7 +76,58 @@
                 </div>
             </div>
         </section>
+        <!-- SECCIÓN DE RESEÑAS -->
+        <section class="testimonios" id="resenas">
+            <div class="especialidades-header">
+                <h2>Lo que dicen nuestros pacientes</h2>
+                <p>La confianza de miles de personas respalda nuestro compromiso con tu salud.</p>
+            </div>
+            <div class="grid-testimonios">
+                <div class="testimonio-card">
+                    <div class="estrellas">★★★★★</div>
+                    <p>"La facilidad para agendar mi cita de cardiología fue increíble. El recordatorio por correo me ayudó mucho."</p>
+                    <div class="autor">
+                        <img src="https://ui-avatars.com/api/?name=Carlos+Ruiz&background=random" alt="Paciente">
+                        <div><strong>Carlos Ruiz</strong><br><small>Paciente recurrente</small></div>
+                    </div>
+                </div>
+                <div class="testimonio-card">
+                    <div class="estrellas">★★★★★</div>
+                    <p>"Excelente atención de los doctores. VitaSystem hizo que mi proceso médico fuera mucho más organizado."</p>
+                    <div class="autor">
+                        <img src="https://ui-avatars.com/api/?name=Elena+Gomez&background=random" alt="Paciente">
+                        <div><strong>Elena Gómez</strong><br><small>Paciente de Pediatría</small></div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <!-- FOOTER CON INFORMACIÓN DE CONTACTO -->
+    <footer class="footer" id="contacto">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 1rem;">
+                    <span>💙</span> VitaSystem
+                </div>
+                <p>Tu salud es nuestra prioridad. Tecnología humana al servicio de la vida.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <p>📍 Calle 100 #15-20, Bogotá, Colombia</p>
+                <p>� +57 (601) 123-4567</p>
+                <p>📧 soporte@vitasystem.com</p>
+            </div>
+            <div class="footer-col">
+                <h3>Horarios</h3>
+                <p>Lunes - Viernes: 7:00 AM - 7:00 PM</p>
+                <p>Sábados: 8:00 AM - 1:00 PM</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 VitaSystem. Todos los derechos reservados.
+        </div>
+    </footer>
 
     <div id="loginModal" class="modal">
         <div class="modal-content">
@@ -126,93 +177,6 @@
         </div>
     </div>
 
-    <script src="script.js">
-        document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 El JavaScript cargó correctamente.");
-
-    // 1. Capturar elementos
-    const loginModal = document.getElementById('loginModal');
-    const registerModal = document.getElementById('registerModal');
-    const btnLogin = document.getElementById('btnLogin');
-    const btnRegister = document.getElementById('btnRegister');
-    const btnAcceder = document.getElementById('btnAcceder');
-    const closeLogin = document.getElementById('closeModal');
-    const closeRegister = document.getElementById('closeRegisterModal');
-    const btnEntrarDashboard = document.getElementById('btnEntrarDashboard');
-    const registerForm = document.getElementById('registerForm');
-
-    // 2. Verificar que los botones existan antes de darles órdenes
-    if (btnLogin && loginModal) {
-        btnLogin.addEventListener('click', () => {
-            console.log("Clic en Iniciar Sesión");
-            loginModal.style.display = 'flex';
-        });
-    }
-
-    if (btnAcceder && loginModal) {
-        btnAcceder.addEventListener('click', () => loginModal.style.display = 'flex');
-    }
-
-    if (btnRegister && registerModal) {
-        btnRegister.addEventListener('click', () => {
-            console.log("Clic en Registrarse");
-            registerModal.style.display = 'flex';
-        });
-    }
-
-    // 3. Cerrar modales
-    if (closeLogin) closeLogin.addEventListener('click', () => loginModal.style.display = 'none');
-    if (closeRegister) closeRegister.addEventListener('click', () => registerModal.style.display = 'none');
-
-    window.addEventListener('click', (e) => {
-        if (e.target === loginModal) loginModal.style.display = 'none';
-        if (e.target === registerModal) registerModal.style.display = 'none';
-    });
-
-    // 4. Botón normal de entrar al Dashboard
-    if (btnEntrarDashboard) {
-        btnEntrarDashboard.addEventListener('click', function() {
-            window.location.href = 'dashboard.html';
-        });
-    }
-
-    // 5. Formulario de Registro con el Backend
-    if (registerForm) {
-        registerForm.addEventListener('submit', async function(evento) {
-            evento.preventDefault(); 
-            console.log("Enviando datos al backend...");
-            
-            const datosPaciente = {
-                nombre: document.getElementById('regNombre').value,
-                cedula: document.getElementById('regCedula').value,
-                correo: document.getElementById('regEmail').value,
-                telefono: document.getElementById('regTelefono').value,
-                password: document.getElementById('regPassword').value
-            };
-
-            try {
-                const respuesta = await fetch('http://localhost:3000/api/registro', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datosPaciente)
-                });
-
-                const resultado = await respuesta.json();
-
-                if (respuesta.ok) {
-                    alert('🎉 ' + resultado.mensaje);
-                    localStorage.setItem('nombrePaciente', resultado.nombreUsuario);
-                    window.location.href = 'dashboard.html';
-                } else {
-                    alert('❌ ' + resultado.mensaje);
-                }
-            } catch (error) {
-                console.error("Error del servidor:", error);
-                alert('No se pudo conectar con el servidor. ¿Está Node.js prendido?');
-            }
-        });
-    }
-});
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -34,6 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const linkInicio = document.getElementById('linkInicio');
     const linkAgendar = document.getElementById('linkAgendar');
+    const contenedorProximasCitas = document.getElementById('contenedorProximasCitas');
+    const contenedorCalendario = document.getElementById('contenedorCalendario');
+
+    // --- ESTADO GLOBAL DEL CALENDARIO (Faltaba declarar esto) ---
+    let mesVista = new Date().getMonth();
+    let anioVista = new Date().getFullYear();
+    let todasLasCitas = [];
 
     function mostrarSeccion(seccionActiva, linkActivo) {
         document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
@@ -45,11 +52,162 @@ document.addEventListener('DOMContentLoaded', () => {
         if (seccionActiva === seccionAgendar) {
             goToStep(1);
         }
+        if (seccionActiva === seccionInicio) {
+            cargarProximasCitas();
+        }
     }
 
     if (linkInicio) linkInicio.addEventListener('click', () => mostrarSeccion(seccionInicio, linkInicio));
     if (linkAgendar) linkAgendar.addEventListener('click', () => mostrarSeccion(seccionAgendar, linkAgendar));
 
+    async function cargarProximasCitas() {
+        let correo = localStorage.getItem('correoPaciente');
+        if (!correo || !contenedorProximasCitas) return;
+
+        contenedorProximasCitas.innerHTML = '<div style="text-align:center; padding: 20px;">⏳ Consultando tus próximas citas...</div>';
+
+        try {
+            const respuesta = await fetch(`http://127.0.0.1:3000/api/mis-citas?correo=${correo}`);
+            const citas = await respuesta.json();
+
+            if (!respuesta.ok) {
+                contenedorProximasCitas.innerHTML = `<div style="color:red; text-align:center; padding:20px;">❌ Error al cargar datos.</div>`;
+                return;
+            }
+
+            todasLasCitas = citas; // Guardamos las citas para la navegación del calendario
+            // Renderizar el calendario con todas las citas obtenidas
+            renderizarCalendario(todasLasCitas, mesVista, anioVista);
+
+            // Obtener fecha de hoy en formato local YYYY-MM-DD
+            const hoy = new Date().toLocaleDateString('en-CA'); 
+
+            // 1. Filtrar solo citas de hoy o futuras
+            const proximas = citas.filter(c => c.fecha.substring(0, 10) >= hoy);
+
+            if (proximas.length === 0) {
+                contenedorProximasCitas.innerHTML = `
+                    <div class="card" style="text-align: center; padding: 30px; margin-top:20px;">
+                        <div style="font-size: 3rem; margin-bottom: 15px;">📅</div>
+                        <h3>No tienes citas próximas</h3>
+                        <p>Mantente al día con tu salud agendando una nueva consulta.</p>
+                        <button class="btn-primary" style="margin-top: 15px;" id="btnAgendarDesdeInicio">Agendar Ahora</button>
+                    </div>`;
+                
+                document.getElementById('btnAgendarDesdeInicio')?.addEventListener('click', () => linkAgendar.click());
+                return;
+            }
+
+            // 2. Tomar la fecha de la primera cita disponible (la más cercana)
+            const fechaCercana = proximas[0].fecha.substring(0, 10);
+            
+            // 3. Filtrar todas las citas que coincidan con esa fecha específica
+            const citasDelDia = proximas.filter(c => c.fecha.substring(0, 10) === fechaCercana);
+
+            let html = `<h3>📅 Próximas citas: ${fechaCercana === hoy ? 'Hoy' : fechaCercana}</h3><div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">`;
+            
+            citasDelDia.forEach((cita, index) => {
+                html += `
+                    <div class="card" style="border-left: 5px solid #ea580c; padding: 20px; display: flex; justify-content: space-between; align-items: center; background: white; text-align: left; animation-delay: ${index * 0.1}s;">
+                        <div>
+                            <span style="background: #ffedd5; color: #9a3412; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">${cita.especialidad}</span>
+                            <h3 style="margin: 10px 0 5px 0;">Dr. ${cita.doctor}</h3>
+                            <p style="color: #64748b; margin: 0;">Centro Médico VitaSystem</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="display: block; font-size: 1.5rem; font-weight: 800; color: #1e293b;">${cita.hora.substring(0, 5)}</span>
+                            <button class="btn-cancelar-cita" onclick="cancelarCita(${cita.id})" style="margin-top: 8px;">Cancelar</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            contenedorProximasCitas.innerHTML = html;
+
+        } catch (error) {
+            contenedorProximasCitas.innerHTML = '<div style="color:red; text-align:center; padding:20px;">🚨 Error de conexión.</div>';
+        }
+    }
+
+    function renderizarCalendario(citas, mes, anio) {
+        if (!contenedorCalendario) return;
+
+        const ahora = new Date();
+        const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+        // Primer día del mes y cantidad de días
+        const primerDiaSemana = new Date(anio, mes, 1).getDay();
+        const diasEnMes = new Date(anio, mes + 1, 0).getDate();
+
+        // Ajuste para que lunes sea el primer día (0=Dom en JS, queremos 0=Lun)
+        const offset = (primerDiaSemana === 0 ? 6 : primerDiaSemana - 1);
+
+        // Mapear fechas de citas para búsqueda rápida (YYYY-MM-DD)
+        const fechasConCita = citas.map(c => (typeof c.fecha === 'string' ? c.fecha.substring(0, 10) : ''));
+
+        let html = `
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button class="btn-cal" id="prevMonth">‹</button>
+                    <h3>${nombresMeses[mes]} ${anio}</h3>
+                    <button class="btn-cal" id="nextMonth">›</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-day-head">Lun</div>
+                    <div class="calendar-day-head">Mar</div>
+                    <div class="calendar-day-head">Mié</div>
+                    <div class="calendar-day-head">Jue</div>
+                    <div class="calendar-day-head">Vie</div>
+                    <div class="calendar-day-head">Sáb</div>
+                    <div class="calendar-day-head">Dom</div>
+        `;
+
+        // Espacios vacíos para el inicio del mes
+        for (let i = 0; i < offset; i++) {
+            html += `<div class="calendar-day empty"></div>`;
+        }
+
+        // Generar días del mes
+        for (let dia = 1; dia <= diasEnMes; dia++) {
+            const fechaIterada = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+            const tieneCita = fechasConCita.includes(fechaIterada);
+            const esHoy = dia === ahora.getDate() && mes === ahora.getMonth() && anio === ahora.getFullYear();
+
+            html += `
+                <div class="calendar-day ${tieneCita ? 'has-appointment' : ''} ${esHoy ? 'today' : ''}" title="${tieneCita ? 'Tienes una cita' : ''}">
+                    ${dia}
+                    ${tieneCita ? '<div class="appointment-dot"></div>' : ''}
+                </div>
+            `;
+        }
+
+        html += `
+                </div>
+            </div>`;
+        contenedorCalendario.innerHTML = html;
+
+        // Eventos de los botones de cambio de mes
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            mesVista--;
+            if (mesVista < 0) {
+                mesVista = 11;
+                anioVista--;
+            }
+            renderizarCalendario(todasLasCitas, mesVista, anioVista);
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            mesVista++;
+            if (mesVista > 11) {
+                mesVista = 0;
+                anioVista++;
+            }
+            renderizarCalendario(todasLasCitas, mesVista, anioVista);
+        });
+    }
+
+    // Cargar inicialmente al entrar
+    cargarProximasCitas();
 
     // ==========================================
     // 3. LÓGICA DEL WIZARD DE AGENDAMIENTO
@@ -95,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
         doctorCardsList.innerHTML = `<div class="card" style="text-align: center; width: 100%;">Buscando doctores reales en ${selectedSpecialty}...</div>`;
         
         try {
-            const respuesta = await fetch('http://localhost:3000/api/doctores');
+            const respuesta = await fetch('http://127.0.0.1:3000/api/doctores');
             const doctoresReales = await respuesta.json();
 
             const doctoresFiltrados = doctoresReales.filter(doc => doc.especialidad === selectedSpecialty);
@@ -107,11 +265,12 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 doctoresFiltrados.forEach(doc => {
                     doctorCardsList.innerHTML += `
-                        <div class="booking-card doctor-card" data-doctor-id="${doc.id}" data-doctor-name="${doc.nombre}" style="flex-direction: row; gap: 20px; align-items: center; justify-content: start;">
-                            <img src="https://ui-avatars.com/api/?name=${doc.nombre.replace(/\s+/g, '+')}&background=E0F2FE&color=0369a1" alt="Perfil" class="avatar" style="width: 50px; height: 50px;">
+                        <div class="booking-card doctor-card" data-doctor-id="${doc.id}" data-doctor-name="${doc.nombre}">
+                            <img src="https://ui-avatars.com/api/?name=${doc.nombre.replace(/\s+/g, '+')}&background=E0F2FE&color=0369a1" alt="Perfil" class="avatar" style="width: 60px; height: 60px; margin-bottom: 12px;">
                             <div>
-                                <h3 style="margin: 0;">${doc.nombre}</h3>
-                                <p style="margin: 0;">Especialista en ${doc.especialidad}</p>
+                                <h3 style="margin: 0; font-size: 1rem;">${doc.nombre}</h3>
+                                <p style="margin: 5px 0 0 0; font-size: 0.8rem;">Especialista</p>
+                                <span class="available-tag">Disponible hoy</span>
                             </div>
                         </div>
                     `;
@@ -146,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timeSlotsGrid.innerHTML = '<p style="text-align: center; width: 100%;">⏳ Consultando disponibilidad en la base de datos...</p>';
 
             try {
-                const respuesta = await fetch(`http://localhost:3000/api/horarios-disponibles?doctor_id=${selectedDoctorId}&fecha=${selectedDate}`);
+                const respuesta = await fetch(`http://127.0.0.1:3000/api/horarios-disponibles?doctor_id=${selectedDoctorId}&fecha=${selectedDate}`);
                 const horariosReales = await respuesta.json();
 
                 timeSlotsGrid.innerHTML = ''; 
@@ -213,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const respuesta = await fetch('http://localhost:3000/api/agendar', {
+                const respuesta = await fetch('http://127.0.0.1:3000/api/agendar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datosCita)
@@ -241,6 +400,39 @@ document.addEventListener('DOMContentLoaded', () => {
             goToStep(currentStep - 1);
         });
     });
+
+    // --- FUNCIÓN GLOBAL DE CANCELACIÓN ---
+    window.cancelarCita = async (citaId) => {
+        if (!confirm('¿Estás seguro de que deseas cancelar esta cita? Recuerda que cancelaciones con menos de 24 horas de antelación conllevan una penalización.')) {
+            return;
+        }
+
+        try {
+            const respuesta = await fetch('http://127.0.0.1:3000/api/cancelar-cita', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cita_id: citaId })
+            });
+
+            if (respuesta.ok) {
+                const resultado = await respuesta.json();
+                alert(resultado.mensaje);
+                // Recargar los datos actuales
+                cargarProximasCitas();
+                if (seccionMisCitas.classList.contains('active')) {
+                    cargarMisCitas();
+                }
+            } else if (respuesta.status === 404) {
+                alert('❌ Error 404: La ruta de cancelación no se encontró. ¿Reiniciaste el servidor Node.js?');
+            } else {
+                const resultado = await respuesta.json();
+                alert('❌ ' + resultado.mensaje);
+            }
+        } catch (error) {
+            console.error("Error al cancelar:", error);
+            alert('🚨 Error de conexión al intentar cancelar.');
+        }
+    };
 
     // ==========================================
     // 4. LÓGICA DE "MIS CITAS" (COMPLETAMENTE ARREGLADA)
@@ -273,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const respuesta = await fetch(`http://localhost:3000/api/mis-citas?correo=${correo}`);
+            const respuesta = await fetch(`http://127.0.0.1:3000/api/mis-citas?correo=${correo}`);
             const citas = await respuesta.json();
 
             if (!respuesta.ok) {
@@ -300,6 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div style="text-align: right; background: #f0f9ff; padding: 10px; border-radius: 8px;">
                             <span style="display: block; font-weight: bold; color: #0284c7; margin-bottom: 5px;">📅 ${fechaLimpia}</span>
                             <span style="display: block; font-weight: bold; color: #ea580c;">⏰ ${cita.hora}</span>
+                            <button class="btn-cancelar-cita" onclick="cancelarCita(${cita.id})" style="margin-top: 10px; width: 100%;">Cancelar</button>
                         </div>
                     </div>
                 `;
